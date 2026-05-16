@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aydo Hub | Premium Script</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --secondary: #ec4899;
+            --bg-dark: #030712;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.5; filter: blur(40px); }
+            50% { opacity: 0.8; filter: blur(60px); }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+        }
+
+        .neon-text {
+            background: linear-gradient(to right, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .loader-ring {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(139, 92, 246, 0.1);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast notification animation */
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .toast {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        ::-webkit-scrollbar { width: 0px; }
+
+        .hidden-view { display: none; }
+        .active-view { display: flex; animation: fadeIn 0.8s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="fixed inset-0 z-[-1] overflow-hidden">
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full mix-blend-screen" style="animation: pulse-glow 8s infinite"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-600/20 rounded-full mix-blend-screen" style="animation: pulse-glow 8s infinite alternate"></div>
+    </div>
+
+    <main id="home-view" class="min-h-[160vh] flex flex-col items-center">
+        <section class="h-screen flex flex-col justify-center items-center px-6 text-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 neon-text tracking-tighter">
+                Aydo Hub <br class="md:hidden"> en iyi tsb scripti
+            </h1>
+            <p class="text-gray-400 text-lg md:text-xl max-w-lg mb-12">
+                Hız, güç ve stabilite bir arada. Türkiye'nin en gelişmiş script paneline hoş geldin.
+            </p>
+            
+            <div class="animate-bounce mt-10 text-gray-500 cursor-pointer" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})">
+                <span class="text-sm uppercase tracking-widest block mb-2">Aşağı Kaydır</span>
+                <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            </div>
+        </section>
+
+        <section class="h-[60vh] w-full flex items-center justify-center">
+            <div class="glass p-12 max-w-2xl w-full mx-6 text-center space-y-8 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <h2 class="text-3xl font-bold">Hazır mısın?</h2>
+                <p class="text-gray-400">Güncel kodlara erişmek ve sistemi başlatmak için devam et butonuna tıkla.</p>
+                <button onclick="startLoading()" class="relative z-10 w-full md:w-auto px-12 py-5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl font-extrabold text-xl shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 hover:scale-[1.02] active:scale-95 transition-all">
+                    DEVAM ET
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <div id="loading-view" class="fixed inset-0 z-50 bg-gray-950 flex-col items-center justify-center hidden">
+        <div class="relative">
+            <div class="loader-ring"></div>
+            <div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-purple-400">AYDO</div>
+        </div>
+        <div class="mt-8 text-center">
+            <h3 class="text-2xl font-bold mb-2 tracking-widest">SİSTEM YÜKLENİYOR</h3>
+            <div class="w-48 h-1 bg-gray-800 rounded-full mx-auto overflow-hidden">
+                <div id="progress-bar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 w-0 transition-all duration-300"></div>
+            </div>
+            <p id="loading-status" class="mt-3 text-gray-500 text-sm italic">Veritabanı bağlanıyor...</p>
+        </div>
+    </div>
+
+    <div id="codes-view" class="fixed inset-0 z-40 bg-gray-950 hidden flex-col items-center justify-center px-6">
+        <div class="max-w-4xl w-full space-y-12 text-center">
+            <div class="space-y-4">
+                <span class="px-4 py-1 bg-purple-500/10 text-purple-400 rounded-full text-xs font-bold tracking-widest border border-purple-500/20 uppercase">Erişim Onaylandı</span>
+                <h1 class="text-4xl md:text-6xl font-black neon-text uppercase tracking-tighter">GÜNCEL KODLAR:</h1>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- V1 Card -->
+                <div class="glass p-8 hover:border-purple-500/50 transition-all group">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">V1 Sürümü</h3>
+                    <p class="text-gray-500 text-sm mb-6">Klasik ve hızlı performans.</p>
+                    <button onclick="copyCode('V1')" class="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg font-bold transition-all active:scale-95">Kodu Kopyala</button>
+                </div>
+
+                <!-- V2 Card -->
+                <div class="glass p-8 hover:border-pink-500/50 transition-all group">
+                    <div class="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">V2 Sürümü</h3>
+                    <p class="text-gray-500 text-sm mb-6">Gelişmiş özellikler ve yeni UI.</p>
+                    <button onclick="copyCode('V2')" class="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg font-bold transition-all active:scale-95">Kodu Kopyala</button>
+                </div>
+            </div>
+
+            <button onclick="location.reload()" class="text-gray-500 hover:text-white transition-colors text-sm underline underline-offset-4">Başa Dön</button>
+        </div>
+    </div>
+
+    <div id="notification-area" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] pointer-events-none"></div>
+
+    <script>
+        const SCRIPTS = {
+            V1: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/rackidlig-coder/bunuokuyosangityemekye/refs/heads/main/31.md"))()',
+            V2: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/rackidlig-coder/bunuokuyosangityemekye/refs/heads/main/32.md"))()'
+        };
+
+        function startLoading() {
+            const loadingView = document.getElementById('loading-view');
+            const homeView = document.getElementById('home-view');
+            const codesView = document.getElementById('codes-view');
+            const progressBar = document.getElementById('progress-bar');
+            const statusText = document.getElementById('loading-status');
+
+            loadingView.classList.remove('hidden');
+            loadingView.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+
+            const messages = [
+                "Sunuculara bağlanılıyor...",
+                "Script paketleri ayıklanıyor...",
+                "API anahtarları doğrulanıyor...",
+                "Güvenlik protokolleri aşılıyor...",
+                "Erişim izni alındı!"
+            ];
+
+            let progress = 0;
+            let msgIndex = 0;
+
+            const interval = setInterval(() => {
+                progress += Math.random() * 20;
+                if (progress > 100) progress = 100;
+                
+                progressBar.style.width = progress + '%';
+                
+                if (progress > (msgIndex + 1) * 20 && msgIndex < messages.length - 1) {
+                    msgIndex++;
+                    statusText.innerText = messages[msgIndex];
+                }
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loadingView.classList.remove('flex');
+                        loadingView.classList.add('hidden');
+                        homeView.style.display = 'none';
+                        codesView.classList.remove('hidden');
+                        codesView.classList.add('active-view');
+                    }, 600);
+                }
+            }, 350);
+        }
+
+        function copyCode(version) {
+            const codeToCopy = SCRIPTS[version];
+            
+            // Temporary element for execCommand copy
+            const textArea = document.createElement("textarea");
+            textArea.value = codeToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showNotification(`${version} Kodu başarıyla kopyalandı!`);
+            } catch (err) {
+                showNotification("Kopyalama başarısız oldu.");
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showNotification(message) {
+            const area = document.getElementById('notification-area');
+            const toast = document.createElement('div');
+            toast.className = 'toast bg-white text-black px-8 py-3 rounded-xl font-bold shadow-2xl mb-4 border-l-4 border-purple-500 flex items-center gap-3';
+            toast.innerHTML = `
+                <svg class="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                ${message}
+            `;
+            area.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
